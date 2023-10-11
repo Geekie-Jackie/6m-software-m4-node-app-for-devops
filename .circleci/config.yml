@@ -30,10 +30,10 @@ jobs:
       - checkout
       - docker/check
       - docker/build: 
-          name: lohcd/cd_demo_4.6
+          image: lohcd/cd_demo_4.6
           tag: 1.0.1
       - docker/push:
-          name: lohcd/cd_demo_4.6
+          image: lohcd/cd_demo_4.6
           tag: 1.0.1
 workflows:
   simple_workflow:
