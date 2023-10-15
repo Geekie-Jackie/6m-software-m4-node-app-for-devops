@@ -35,7 +35,6 @@ jobs:
           name: Set Docker image tag
           command: echo "export DOCKER_IMAGE_TAG=$CIRCLE_TAG" >> $BASH_ENV
       - docker/build: 
-          name: Build Docker Image
           image: lohcd/cd_demo_4.6 # define the Docker image name to build
           tag: $DOCKER_IMAGE_TAG # this will use the Git tag as the Docker image tag
       - run:
