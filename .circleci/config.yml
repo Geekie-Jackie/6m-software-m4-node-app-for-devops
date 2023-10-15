@@ -32,17 +32,27 @@ jobs:
       - docker/check  # check if Docker is available and properly configured
       - docker/build: 
           image: lohcd/cd_demo_4.6 # define the Docker image name to build
-          tag: 1.0.1 # define the Docker image tag to apply
+          tag: << pipeline.git.tag >> # this will use the Git tag as the Docker image tag
       - docker/push:
           image: lohcd/cd_demo_4.6 # define the Docker image name to push
-          tag: 1.0.1 # define the Docker image tag to push
+          tag: << pipeline.git.tag >> # this will use the Git tag as the Docker image tag
 workflows:
-  simple_workflow:
+  version: 2
+  simple_workflow: # 'simple_workflow' includes the following jobs in a specific sequence.
     jobs:
-      - build # execute the 'build' job
-      - test:
+      - build 
+          filters:
+            branches:
+              only: main # execute the 'build' job when changes are pushed to the 'main' branch
+      - test: 
           requires:
             - build # execute the 'test' job after 'build' is done
+          filters:
+            branches:
+              only: main # execute the 'test' job after the 'build' job when changes are pushed to the 'main' branch
       - build-and-push:
           requires:
             - test # execute the 'build-and-push' job after 'test'
+          filters:
+            tags:
+              only: /^v\d+\.\d+\.\d+$/ # Only run when a Git tag follows Semantic Versioning (e.g., v1.0.2)
