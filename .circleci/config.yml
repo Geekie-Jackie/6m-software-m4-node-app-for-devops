@@ -3,6 +3,7 @@ orbs: # pre-packaged reusable configurations and commands
   node: circleci/node@5.0.1 # orb for Node.js-related tasks
   docker: circleci/docker@2.1.4 # orb for Docker-related tasks
 
+# define jobs
 jobs:
   build: # the 'build' job checks out the source code, installs Node.js packages using npm, and logs the installation process.
     docker:
@@ -36,11 +37,13 @@ jobs:
       - docker/push:
           image: lohcd/cd_demo_4.6 # define the Docker image name to push
           tag: << pipeline.git.tag >> # this will use the Git tag as the Docker image tag
+
+# define workflows
 workflows:
   version: 2
   simple_workflow: # 'simple_workflow' includes the following jobs in a specific sequence.
     jobs:
-      - build 
+      - build: 
           filters:
             branches:
               only: main # execute the 'build' job when changes are pushed to the 'main' branch
