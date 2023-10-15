@@ -31,12 +31,21 @@ jobs:
       - setup_remote_docker # set up a remote Docker environment
       - checkout 
       - docker/check  # check if Docker is available and properly configured
+      - run:
+          name: Set Docker image tag
+          command: echo "export DOCKER_IMAGE_TAG=$CIRCLE_TAG" >> $BASH_ENV
       - docker/build: 
+          name: Build Docker Image
           image: lohcd/cd_demo_4.6 # define the Docker image name to build
-          tag: << pipeline.git.tag >> # this will use the Git tag as the Docker image tag
-      - docker/push:
-          image: lohcd/cd_demo_4.6 # define the Docker image name to push
-          tag: << pipeline.git.tag >> # this will use the Git tag as the Docker image tag
+          tag: $DOCKER_IMAGE_TAG # this will use the Git tag as the Docker image tag
+      - run:
+          name: Push Docker image
+          command: |
+            docker push lohcd/cd_demo_4.6:$DOCKER_IMAGE_TAG
+
+      # - docker/push:
+      #     image: lohcd/cd_demo_4.6 # define the Docker image name to push
+      #     tag: << pipeline.git.tag >> # this will use the Git tag as the Docker image tag
 
 # define workflows
 workflows:
