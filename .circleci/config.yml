@@ -53,18 +53,18 @@ jobs:
 
 # define scan job
   scan:
-  docker:
-    - image: cimg/node16.10
-  environment:
-    IMAGE_NAME: lohcd/cd_demo_4.6 # IMAGE_NAME is a variable we could use in our job
-  steps:
-    - checkout
-    - setup_remote_docker
-    - docker/check
-    - run: docker build -t $IMAGE_NAME . # . is current directory
-    # $IMAGE_NAME gets the value of the IMAGE_NAME from the environment defined above.
-    - snyk/scan:
-        docker-image-name: $IMAGE_NAME
+    docker:
+      - image: cimg/node16.10
+    environment:
+      IMAGE_NAME: lohcd/cd_demo_4.6 # IMAGE_NAME is a variable we could use in our job
+    steps:
+      - checkout
+      - setup_remote_docker
+      - docker/check
+      - run: docker build -t $IMAGE_NAME . # . is current directory
+      # $IMAGE_NAME gets the value of the IMAGE_NAME from the environment defined above.
+      - snyk/scan:
+          docker-image-name: $IMAGE_NAME
 
 
     # scan:
