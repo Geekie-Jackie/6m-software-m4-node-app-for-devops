@@ -51,20 +51,35 @@ jobs:
           image: lohcd/cd_demo_4.6 # define the Docker image name to push
           tag: << pipeline.git.tag >> # this will use the Git tag as the Docker image tag
 
+# define scan job
   scan:
-    docker:
-      - image: cimg/node16.10
-    environment:
-      IMAGE_NAME: lohcd/cd_demo_4.6 # IMAGE_NAME is a variable we could use in our job
-    step:
-      - checkout
-      - setup_remote_docker
-      - docker/check
-      - run: docker build -t $IMAGE_NAME . # . is current directory
-      # $IMAGE_NAME gets the value of the IMAGE_NAME from the environment defined above.
-      - synk/scan:
+  docker:
+    - image: cimg/node16.10
+  environment:
+    IMAGE_NAME: lohcd/cd_demo_4.6 # IMAGE_NAME is a variable we could use in our job
+  steps:
+    - checkout
+    - setup_remote_docker
+    - docker/check
+    - run: docker build -t $IMAGE_NAME . # . is current directory
+    # $IMAGE_NAME gets the value of the IMAGE_NAME from the environment defined above.
+    - snyk/scan:
         docker-image-name: $IMAGE_NAME
-      
+
+
+    # scan:
+    #   docker:
+    #     - image: cimg/node:16.10
+    #   environment:
+    #     IMAGE_NAME: terencegaffudsu/education-space #the IMAGE_NAME is a variable we could use in our jobs/steps
+    #   steps:
+    #     - checkout
+    #     - setup_remote_docker
+    #     - docker/check
+    #     - run: docker build -t $IMAGE_NAME . 
+    #     # $IMAGE_NAME gets the value of the IMAGE_NAME from the environment defined above.
+    #     - snyk/scan:
+    #       docker-image-name: $IMAGE_NAME      
 
 # define workflows
 workflows:
