@@ -102,6 +102,6 @@ workflows:
           filters:
             tags:
               only: /^v\d+\.\d+\.\d+$/ # only run when a Git tag follows Semantic Versioning (e.g., v1.0.2)
-      - job:
-        requires:
-          - build
+      - scan:
+          requires:
+           - build
