@@ -65,7 +65,7 @@ jobs:
       # $IMAGE_NAME gets the value of the IMAGE_NAME from the environment defined above.
       - snyk/scan:
           docker-image-name: $IMAGE_NAME
-          severity-threshold: HIGH,CRITICAL # Set the severity threshold to filter HIGH and CRITICAL vulnerabilities
+          severity-threshold: high # Set the severity threshold to filter HIGH and CRITICAL vulnerabilities
 
     # scan:
     #   docker:
