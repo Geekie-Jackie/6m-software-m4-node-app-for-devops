@@ -2,7 +2,7 @@ version: 2.1 # specifies the CircleCI configuration version
 orbs: # pre-packaged reusable configurations and commands
   node: circleci/node@5.0.1 # orb for Node.js-related tasks
   docker: circleci/docker@2.1.4 # orb for Docker-related tasks
-
+  snyk: snyk/snyk@1.5.0
 # define jobs
 jobs:
   build: # the 'build' job checks out the source code, installs Node.js packages using npm, and logs the installation process.
@@ -51,6 +51,21 @@ jobs:
           image: lohcd/cd_demo_4.6 # define the Docker image name to push
           tag: << pipeline.git.tag >> # this will use the Git tag as the Docker image tag
 
+  scan:
+    docker:
+      - image: cimg/node16.10
+    environment:
+      IMAGE_NAME: lohcd/cd_demo_4.6 # IMAGE_NAME is a variable we could use in our job
+    step:
+      - checkout
+      - setup_remote_docker
+      - docker/check
+      - run: docker build -t $IMAGE_NAME . # . is current directory
+      # $IMAGE_NAME gets the value of the IMAGE_NAME from the environment defined above.
+      - synk/scan:
+        docker-image-name: $IMAGE_NAME
+      
+
 # define workflows
 workflows:
   version: 2
@@ -72,3 +87,6 @@ workflows:
           filters:
             tags:
               only: /^v\d+\.\d+\.\d+$/ # only run when a Git tag follows Semantic Versioning (e.g., v1.0.2)
+      - job:
+        requires:
+          - build
