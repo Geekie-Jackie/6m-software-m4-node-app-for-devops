@@ -1,3 +1,5 @@
+# refer to https://github.com/terencegaffudSU/6m-software-m4-node-app-for-devops/blob/main/.circleci/config.ymlcd 
+
 version: 2.1 # specifies the CircleCI configuration version
 orbs: # pre-packaged reusable configurations and commands
   node: circleci/node@5.0.1 # orb for Node.js-related tasks
@@ -96,12 +98,14 @@ workflows:
           filters:
             branches:
               only: main # execute the 'test' job after the 'build' job when changes are pushed to the 'main' branch
-      - build-and-push:
-          requires:
-            - test # execute the 'build-and-push' job after 'test'
+      - build-and-push: # this should run only if a tag is pushed, not if a branch is pushed
+          # requires:
+          #   - test # execute the 'build-and-push' job after 'test'
           filters:
             tags:
               only: /^v\d+\.\d+\.\d+$/ # only run when a Git tag follows Semantic Versioning (e.g., v1.0.2)
+            branches:
+              ignore: /.*/ # ignores all branches 
       - scan:
           requires:
             - build
